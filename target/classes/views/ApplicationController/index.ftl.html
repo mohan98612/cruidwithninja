@@ -1,0 +1,35 @@
+<#import "../layout/defaultLayout.ftl.html" as layout> 
+<@layout.myLayout "Home page">    
+
+
+      
+<#if frontEvent??>
+<h1>New Event</h1>
+<hr/>
+    <div class="jumbotron">
+        <h1>
+            <p>Event Name  : ${frontEvent.name}</p>    
+        </h1>  
+        <p>Event Manager : ${frontEvent.eventmanager}</p>
+        <p>Event Date : ${frontEvent.eventdate}</p>  
+        <p><#noescape> Event Type :${frontEvent.eventtype}</#noescape></p>
+        <p>Event Location : ${frontEvent.location}</p>
+    </div>
+</#if>
+
+
+
+<#if olderEvents??>
+    <h1>Old Events </h1>
+    <hr/>
+    <#list olderEvents as event>
+        <h3>
+            <a href="/article/${event.id}">${event.name}</a>    
+        </h3>  
+        <p>${event.eventdate}</p> 
+        <hr/> 
+    </#list>
+    
+</#if>
+
+</@layout.myLayout>
