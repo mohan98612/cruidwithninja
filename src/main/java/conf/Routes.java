@@ -59,7 +59,10 @@ public class Routes implements ApplicationRoutes {
         router.GET().route("/logout").with(LoginLogoutController::logout);
         router.GET().route("/signup").with(LoginLogoutController::signup);
         router.POST().route("/signup").with(LoginLogoutController::signupPost);
-        
+        router.GET().route("/image").with(LoginLogoutController::image);
+        router.POST().route("/image").with(LoginLogoutController::imagePost);
+        router.GET().route("/image1/{id}").with(LoginLogoutController::imagePostid);
+       
         
         ///////////////////////////////////////////////////////////////////////
         // Create new article
@@ -68,7 +71,9 @@ public class Routes implements ApplicationRoutes {
       // router.POST().route("/article/new").with(ArticleController::articleNewPost);
        router.POST().route("/article/new").with(EventController::eventNewPost);
        router.GET().route("/delete_event/{id}").with(EventController::eventdelete);
-      // router.POST().route("/Update_event/{id}").with(EventController::updateevent);
+       router.POST().route("/Update_event/{id}").with(EventController::updateevent);
+       router.GET().route("/Update_event/{id}").with(ArticleController::update);
+       
         
         ///////////////////////////////////////////////////////////////////////
         // Create new article
@@ -89,7 +94,8 @@ public class Routes implements ApplicationRoutes {
         ///////////////////////////////////////////////////////////////////////    
         router.GET().route("/assets/webjars/{fileName: .*}").with(AssetsController::serveWebJars);
         router.GET().route("/assets/{fileName: .*}").with(AssetsController::serveStatic);
-        
+        router.POST().route("/assets/{fileName: .*}").with(AssetsController::serveStatic);
+
         ///////////////////////////////////////////////////////////////////////
         // Index / Catchall shows index page
         ///////////////////////////////////////////////////////////////////////

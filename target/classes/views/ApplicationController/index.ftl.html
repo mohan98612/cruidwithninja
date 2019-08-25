@@ -3,8 +3,8 @@
 
 
       
-<#if frontEvent??>
-<h1>New Event</h1>
+ <!--  <#if frontEven??>
+ 
 <hr/>
     <div class="jumbotron">
         <h1>
@@ -16,11 +16,11 @@
         <p>Event Location : ${frontEvent.location}</p>
     </div>
 </#if>
-
+-->
 
 
 <#if olderEvents??>
-    <h1>Old Events </h1>
+    <h1>Events </h1>
     <hr/>
     <#list olderEvents as event>
         <h3>
@@ -29,7 +29,12 @@
         <p>${event.eventdate}</p> 
         <hr/> 
     </#list>
-    
-</#if>
+   
 
+</#if>
+<#if front??>
+
+<h1> Welcome To Event Management System</h1>
+
+</#if>
 </@layout.myLayout>

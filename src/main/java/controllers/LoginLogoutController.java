@@ -36,10 +36,22 @@ import ninja.Context;
 import ninja.Result;
 import ninja.Results;
 import ninja.params.Param;
+import ninja.params.PathParam;
 import ninja.session.Session;
 import ninja.validation.JSR303Validation;
 import ninja.validation.Validation;
 import models.User;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.List;
+
+import org.apache.commons.fileupload.FileItemIterator;
+import org.apache.commons.fileupload.FileItemStream;
+import org.apache.commons.io.IOUtils;
+
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -52,6 +64,7 @@ import dao.EventDao;;
 public class LoginLogoutController {
     
 	public long cuser;
+	public static long temp;
     @Inject
     UserDao userDao;
     @Inject
@@ -74,20 +87,24 @@ public class LoginLogoutController {
                             Context context) {
 
         boolean isUserNameAndPasswordValid = userDao.isUserAndPasswordValid(username, password);
-
+        
         if (isUserNameAndPasswordValid) {
         	 User user=  eventDao.currentuser(username);  
-       	  cuser=user.id;
+       	  this.cuser=user.id;
+       	  temp=this.cuser;
            
             Session session = context.getSession();
             session.put("username", username);
 
             if (rememberMe != null && rememberMe) {
-                session.setExpiryTime(24 * 60 * 60 * 1000L);
+                session.setExpiryTime(5*60*60*1000L);
             }
-
+            else {
+            	session.setExpiryTime(5*60*1000L);
+            }
+            
             context.getFlashScope().success("login.loginSuccessful");
-
+          //  "login.loginSuccessful"
             return Results.redirect("/");
 
         } else {
@@ -111,6 +128,7 @@ public class LoginLogoutController {
         // remove any user dependent information
         context.getSession().clear();
         context.getFlashScope().success("login.logoutSuccessful");
+        temp=0L;
 
         return Results.redirect("/");
 
@@ -120,6 +138,63 @@ public class LoginLogoutController {
         return Results.html();
 
     }
+    public Result image(Context context) {
+
+        return Results.html();
+
+    }
+    public Result imagePost(Context context) throws Exception {
+
+        // Make sure the context really is a multipart context...
+        if (context.isMultipart()) {
+
+            // This is the iterator we can use to iterate over the
+            // contents of the request.
+            FileItemIterator fileItemIterator = context.getFileItemIterator();
+
+            while (fileItemIterator.hasNext()) {
+
+                FileItemStream item = fileItemIterator.next();
+                
+                String name = item.getName();
+                InputStream stream = item.openStream();
+
+                String contentType = item.getContentType();
+                byte[] buffer =IOUtils.toByteArray(stream);
+                stream.read(buffer);
+               File targetFile = new File("C:\\project\\newevent\\src\\main\\java\\assets\\images\\"+name);
+               //eventDao.saveimage(name);
+               OutputStream outputstream = new FileOutputStream(targetFile);
+               outputstream.write(buffer);
+               outputstream.close();
+               return Results.ok().render("file",item);
+            }
+
+        }
+        
+        // We always return ok. You don't want to do that in production ;)
+        return Results.ok();
+
+    }
+    public Result imagePostid(@PathParam("id") Long id,Context context) throws Exception {
+
+        // Make sure the context really is a multipart context...
+     
+
+            // This is the iterator we can use to iterate over the
+            // contents of the request.
+    	String a=eventDao.getimagename(id);
+          
+               return Results.ok().render("file",a);
+            
+
+        
+        
+        // We always return ok. You don't want to do that in production ;)
+      
+
+    }
+
 
     public Result signupPost(@LoggedInUser String username,Context context
     						,@JSR303Validation UserDto userDto
@@ -137,7 +212,8 @@ public class LoginLogoutController {
      boolean a=   eventDao.newuser(username,userDto);
      
     	 User user=  eventDao.currentuser(userDto.username);  
-    	  cuser=user.id;
+    	  this.cuser=user.id;
+    	  temp=this.cuser;
         
         	 if (a) {
                  Session session = context.getSession();
@@ -164,8 +240,9 @@ public class LoginLogoutController {
 
         }
     public long getcuser() {
-    	return cuser;
+    	return temp;
     }
+    
 
     
 }

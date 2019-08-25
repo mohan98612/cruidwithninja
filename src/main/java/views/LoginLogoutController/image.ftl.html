@@ -1,0 +1,29 @@
+<#import "../layout/defaultLayout.ftl.html" as layout> <@layout.myLayout "login">
+
+
+<div class="alert alert-info">
+    <b>Pssst.</b> Default user is "bob@gmail.com" / password is "secret".
+</div>
+
+<div class="container">
+
+	<!-- Example row of columns -->
+	<div class="row">
+		<div class="col-lg-8">
+		  
+		  <form  method="post" enctype="multipart/form-data" action="/image" >
+		  <!--  <form  method="post" enctype="multipart/form-data" action="/image/{id}" > -->
+		 
+                        <input type="file"  name="file" action=".png ,.jpg,.txt" multiple><br/>
+              
+
+                <input type="submit"  value="submit">
+			</form>
+
+		</div>
+	</div>
+</div>
+
+
+
+	</@layout.myLayout>

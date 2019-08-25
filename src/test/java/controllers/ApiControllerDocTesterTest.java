@@ -50,125 +50,125 @@ public class ApiControllerDocTesterTest extends NinjaDocTester {
     @Test
     public void testGetAndPostArticleViaJson() {
 
-        // /////////////////////////////////////////////////////////////////////
-        // Test initial data:
-        // /////////////////////////////////////////////////////////////////////
-        
-        sayNextSection("Retrieving articles for a user (Json)");
-        
-        say("Retrieving all articles of a user is a GET request to " + GET_ARTICLES_URL);
-        
-        Response response = sayAndMakeRequest(
-                Request.GET().url(
-                        testServerUrl().path(GET_ARTICLES_URL.replace("{username}", "bob@gmail.com"))));
-
-        ArticlesDto articlesDto = getGsonWithLongToDateParsing().fromJson(response.payload, ArticlesDto.class);
-
-        sayAndAssertThat("We get back all 3 articles of that user",
-                articlesDto.articles.size(), 
-                CoreMatchers.is(3));
-
-        // /////////////////////////////////////////////////////////////////////
-        // Post new article:
-        // /////////////////////////////////////////////////////////////////////
-        sayNextSection("Posting new article (Json)");
-        
-        say("Posting a new article is a post request to " + POST_ARTICLE_URL);
-        say("Please note that you have to be authenticated in order to be allowed to post.");
-        
-        ArticleDto articleDto = new ArticleDto();
-        articleDto.content = "contentcontent";
-        articleDto.title = "new title new title";
-
-        response = sayAndMakeRequest(
-                Request.POST().url(
-                    testServerUrl().path(POST_ARTICLE_URL.replace("{username}", USER)))
-                .payload(articleDto));
-        
-        sayAndAssertThat(
-                "You have to be authenticated in order to post articles" 
-                , response.httpStatus 
-                , CoreMatchers.is(403));
-        
-        doLogin();
-
-        say("Now we are authenticated and expect the post to succeed...");
-        response = sayAndMakeRequest(Request.POST().url(
-                testServerUrl().path(POST_ARTICLE_URL.replace("{username}", USER)))
-                .contentTypeApplicationJson()
-                .payload(articleDto));
-
-        sayAndAssertThat("After successful login we are able to post articles"
-                , response.httpStatus
-                , CoreMatchers.is(200));
-
-        // /////////////////////////////////////////////////////////////////////
-        // Fetch articles again => assert we got a new one ...
-        // /////////////////////////////////////////////////////////////////////
-        
-        say("If we now fetch the articles again we are getting a new article (the one we have posted successfully");
-        response = sayAndMakeRequest(Request.GET().url(testServerUrl().path(GET_ARTICLES_URL.replace("{username}", "bob@gmail.com"))));
-
-        articlesDto = getGsonWithLongToDateParsing().fromJson(response.payload, ArticlesDto.class);
-        // one new result:
-        sayAndAssertThat("We are now getting 4 articles."
-                , articlesDto.articles.size()
-                , CoreMatchers.is(4));
-        
-        
-        
-        // /////////////////////////////////////////////////////////////////////
-        // Fetch single article
-        // /////////////////////////////////////////////////////////////////////
-        say("We can also fetch an individual article via the Json Api.");
-        say("That's a GET request to: " + GET_ARTICLE_URL);
-        response = sayAndMakeRequest(
-                Request.GET().url(
-                        testServerUrl().path(
-                                GET_ARTICLE_URL
-                                        .replace("{username}", "bob@gmail.com")
-                                        .replace("{id}", "1"))));
-
-        Article article = getGsonWithLongToDateParsing().fromJson(response.payload, Article.class);
-        // one new result:
-        sayAndAssertThat("And we got back the first article"
-                , article.id
-                , CoreMatchers.is(1L));
-    }
-
-
-
-    private Gson getGsonWithLongToDateParsing() {
-        // Creates the json object which will manage the information received
-        GsonBuilder builder = new GsonBuilder();
-        // Register an adapter to manage the date types as long values
-        builder.registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
-            public Date deserialize(JsonElement json,
-                                    Type typeOfT,
-                                    JsonDeserializationContext context)
-                    throws JsonParseException {
-                return new Date(json.getAsJsonPrimitive().getAsLong());
-            }
-        });
-        Gson gson = builder.create();
-
-        return gson;
-    }
-
-    private void doLogin() {
-
-        say("To authenticate we send our credentials to " + LOGIN_URL);
-        say("We are then issued a cookie from the server that authenticates us in further requests");
-
-        Map<String, String> formParameters = Maps.newHashMap();
-        formParameters.put("username", "bob@gmail.com");
-        formParameters.put("password", "secret");
-        
-        makeRequest(
-                Request.POST().url(
-                    testServerUrl().path(LOGIN_URL))
-                .addFormParameter("username", "bob@gmail.com")
-                .addFormParameter("password", "secret"));
-         }
+//        // /////////////////////////////////////////////////////////////////////
+//        // Test initial data:
+//        // /////////////////////////////////////////////////////////////////////
+//        
+//        sayNextSection("Retrieving articles for a user (Json)");
+//        
+//        say("Retrieving all articles of a user is a GET request to " + GET_ARTICLES_URL);
+//        
+//        Response response = sayAndMakeRequest(
+//                Request.GET().url(
+//                        testServerUrl().path(GET_ARTICLES_URL.replace("{username}", "bob@gmail.com"))));
+//
+//        ArticlesDto articlesDto = getGsonWithLongToDateParsing().fromJson(response.payload, ArticlesDto.class);
+//
+//        sayAndAssertThat("We get back all 3 articles of that user",
+//                articlesDto.articles.size(), 
+//                CoreMatchers.is(3));
+//
+//        // /////////////////////////////////////////////////////////////////////
+//        // Post new article:
+//        // /////////////////////////////////////////////////////////////////////
+//        sayNextSection("Posting new article (Json)");
+//        
+//        say("Posting a new article is a post request to " + POST_ARTICLE_URL);
+//        say("Please note that you have to be authenticated in order to be allowed to post.");
+//        
+//        ArticleDto articleDto = new ArticleDto();
+//        articleDto.content = "contentcontent";
+//        articleDto.title = "new title new title";
+//
+//        response = sayAndMakeRequest(
+//                Request.POST().url(
+//                    testServerUrl().path(POST_ARTICLE_URL.replace("{username}", USER)))
+//                .payload(articleDto));
+//        
+//        sayAndAssertThat(
+//                "You have to be authenticated in order to post articles" 
+//                , response.httpStatus 
+//                , CoreMatchers.is(403));
+//        
+//        doLogin();
+//
+//        say("Now we are authenticated and expect the post to succeed...");
+//        response = sayAndMakeRequest(Request.POST().url(
+//                testServerUrl().path(POST_ARTICLE_URL.replace("{username}", USER)))
+//                .contentTypeApplicationJson()
+//                .payload(articleDto));
+//
+//        sayAndAssertThat("After successful login we are able to post articles"
+//                , response.httpStatus
+//                , CoreMatchers.is(200));
+//
+//        // /////////////////////////////////////////////////////////////////////
+//        // Fetch articles again => assert we got a new one ...
+//        // /////////////////////////////////////////////////////////////////////
+//        
+//        say("If we now fetch the articles again we are getting a new article (the one we have posted successfully");
+//        response = sayAndMakeRequest(Request.GET().url(testServerUrl().path(GET_ARTICLES_URL.replace("{username}", "bob@gmail.com"))));
+//
+//        articlesDto = getGsonWithLongToDateParsing().fromJson(response.payload, ArticlesDto.class);
+//        // one new result:
+//        sayAndAssertThat("We are now getting 4 articles."
+//                , articlesDto.articles.size()
+//                , CoreMatchers.is(4));
+//        
+//        
+//        
+//        // /////////////////////////////////////////////////////////////////////
+//        // Fetch single article
+//        // /////////////////////////////////////////////////////////////////////
+//        say("We can also fetch an individual article via the Json Api.");
+//        say("That's a GET request to: " + GET_ARTICLE_URL);
+//        response = sayAndMakeRequest(
+//                Request.GET().url(
+//                        testServerUrl().path(
+//                                GET_ARTICLE_URL
+//                                        .replace("{username}", "bob@gmail.com")
+//                                        .replace("{id}", "1"))));
+//
+//        Article article = getGsonWithLongToDateParsing().fromJson(response.payload, Article.class);
+//        // one new result:
+//        sayAndAssertThat("And we got back the first article"
+//                , article.id
+//                , CoreMatchers.is(1L));
+//    }
+//
+//
+//
+//    private Gson getGsonWithLongToDateParsing() {
+//        // Creates the json object which will manage the information received
+//        GsonBuilder builder = new GsonBuilder();
+//        // Register an adapter to manage the date types as long values
+//        builder.registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
+//            public Date deserialize(JsonElement json,
+//                                    Type typeOfT,
+//                                    JsonDeserializationContext context)
+//                    throws JsonParseException {
+//                return new Date(json.getAsJsonPrimitive().getAsLong());
+//            }
+//        });
+//        Gson gson = builder.create();
+//
+//        return gson;
+//    }
+//
+//    private void doLogin() {
+//
+//        say("To authenticate we send our credentials to " + LOGIN_URL);
+//        say("We are then issued a cookie from the server that authenticates us in further requests");
+//
+//        Map<String, String> formParameters = Maps.newHashMap();
+//        formParameters.put("username", "bob@gmail.com");
+//        formParameters.put("password", "secret");
+//        
+//        makeRequest(
+//                Request.POST().url(
+//                    testServerUrl().path(LOGIN_URL))
+//                .addFormParameter("username", "bob@gmail.com")
+//                .addFormParameter("password", "secret"));
+     }
 
 }

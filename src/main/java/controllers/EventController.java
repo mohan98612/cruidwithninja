@@ -1,9 +1,10 @@
 package controllers;
-
+import ninja.Context;
 import models.EventDto;
 import models.EventsDto;
 import models.Article;
 import models.ArticleDto;
+import models.Image;
 import models.Event;
 import ninja.Context;
 import ninja.FilterWith;
@@ -54,6 +55,7 @@ public class EventController {
             context.getFlashScope().success("New article created.");
             
             return Results.redirect("/");
+            //return Results.redirect("image/${id}")
 
         }
         
@@ -80,7 +82,7 @@ public class EventController {
         return Results.html().render("event", event);
 
     }
-    public Result eventdelete(@PathParam("id") Long id) {
+    public Result eventdelete(@PathParam("id") Long id,Context context) {
 
        // Event event = null;
 
@@ -89,7 +91,7 @@ public class EventController {
              eventDao.deleteEvent(id);
 
         }
-
+        context.getFlashScope().success("Event Deleted");
         return Results.redirect("/");
 
     }
@@ -97,13 +99,13 @@ public class EventController {
 
         // Event event = null;
 
-    	/* @FilterWith(SecureFilter.class)
-    	    public Result updateevent(@LoggedInUser String username,
+    	 @FilterWith(SecureFilter.class)
+    	    public Result updateevent(@PathParam("id") Long id,@LoggedInUser String username,
     	                                 Context context,
     	                                 @JSR303Validation EventDto eventDto,
     	                                 Validation validation) {
 
-    	        if (validation.hasViolations()) {
+    	     /*   if (validation.hasViolations()) {
 
     	            context.getFlashScope().error("Please correct field.");
     	            context.getFlashScope().put("name", eventDto.name);
@@ -113,11 +115,11 @@ public class EventController {
     	            context.getFlashScope().put("location", eventDto.location);
     	            return Results.redirect("/Update_event");
 
-    	        }else {
+    	        }else {*/
     	            
-    	            eventDao.updateEvent(username, eventDto);
+    	            eventDao.updateEvent(id,username, eventDto);
     	            
-    	            context.getFlashScope().success("New article created.");
+    	            context.getFlashScope().success("Event Updated");
     	            
     	            return Results.redirect("/");
 
@@ -126,5 +128,5 @@ public class EventController {
 
       
 
-    }*/
     }
+    

@@ -90,15 +90,22 @@ public class ApplicationController {
     public Result index() {
 
         Event frontPost = eventDao.getFirstEventForFrontPage();
-
+        String front="mohan";
         List<Event> olderPosts = eventDao.getOlderEventsForFrontPage();
-
+        LoginLogoutController newu=new LoginLogoutController();
+        long cuser=newu.getcuser();
         Map<String, Object> map = Maps.newHashMap();
+        
         map.put("frontEvent", frontPost);
         map.put("olderEvents", olderPosts);
-
+       
+        	map.put("front",front);
+        	if(cuser!=0) {
         return Results.html().render("frontEvent", frontPost)
                 .render("olderEvents", olderPosts);
 
+    }else {
+    	 return Results.html().render("frontEvent", frontPost).render("front",front);
     }
+        	}
 }

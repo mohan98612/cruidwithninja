@@ -106,6 +106,20 @@ public class ArticleController {
         }
 
     }
+    @FilterWith(SecureFilter.class)
+    public Result update(@PathParam("id") Long id) {
+
+        Event event = null;
+
+        if (id != null) {
+
+            event = eventDao.getEvent(id);
+
+        }
+
+        return Results.html().render("event", event);
+
+    }
     
 
 }
